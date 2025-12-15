@@ -25,12 +25,12 @@ const GradeCalculator = () => {
   } = useWizard();
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative flex flex-col">
       {/* Animated background grid */}
       <div className="fixed inset-0 bg-grid opacity-30 pointer-events-none" />
 
       {/* Header */}
-      <header className="relative z-10 pt-8 pb-6 px-4">
+      <header className="relative z-10 pt-8 pb-6 px-4 flex-shrink-0">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -60,7 +60,7 @@ const GradeCalculator = () => {
       </header>
 
       {/* Main content */}
-      <main className="relative z-10 px-4 pb-4 sm:pb-12 pt-8">
+      <main className="relative z-10 px-4 pb-4 sm:pb-12 pt-8 flex-1">
         <AnimatePresence mode="wait">
           {currentStep === 'year' && (
             <motion.div key="year">
@@ -116,7 +116,7 @@ const GradeCalculator = () => {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 pb-6 pt-0 sm:pb-8 sm:pt-2 text-center text-sm text-muted-foreground">
+      <footer className="relative z-10 pb-6 pt-0 sm:pb-8 sm:pt-2 text-center text-sm text-muted-foreground flex-shrink-0 mt-auto">
         <p className="flex items-center justify-center gap-1.5">
           <Copyright className="w-3.5 h-3.5" />
           Developed by Wassim Mars
