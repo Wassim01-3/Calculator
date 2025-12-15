@@ -60,7 +60,7 @@ const GradeCalculator = () => {
       </header>
 
       {/* Main content */}
-      <main className="relative z-10 px-4 pb-12 pt-8">
+      <main className="relative z-10 px-4 pb-4 sm:pb-12 pt-8">
         <AnimatePresence mode="wait">
           {currentStep === 'year' && (
             <motion.div key="year">
@@ -116,7 +116,7 @@ const GradeCalculator = () => {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 py-6 text-center text-sm text-muted-foreground">
+      <footer className="relative z-10 pb-6 pt-0 sm:pb-8 sm:pt-2 text-center text-sm text-muted-foreground">
         <p className="flex items-center justify-center gap-1.5">
           <Copyright className="w-3.5 h-3.5" />
           Developed by Wassim Mars
