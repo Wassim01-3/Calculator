@@ -43,7 +43,7 @@ const GradeCalculator = () => {
             Calculez votre moyenne semestrielle en quelques clics
           </p>
           <a
-            href="https://github.com/Wassim01-3/Calculator/releases/download/Calcule/app-debug.apk"
+            href="https://github.com/Wassim01-3/Calculator/releases/download/Calcule/Calcule.de.moyenne.apk"
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-2 rounded-full bg-green-500 text-white px-5 py-2.5 shadow-lg shadow-green-500/30 hover:bg-green-600 hover:shadow-green-500/50 transition"
