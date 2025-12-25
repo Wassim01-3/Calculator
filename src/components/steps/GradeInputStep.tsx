@@ -6,7 +6,7 @@ import { getRequiredInputs, getInputLabel, getFormulaDescription, calculateSubje
 import { CalculationResult } from '@/types/grades';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Calculator, Check, TrendingUp } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calculator, Check, TrendingUp, Link2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface GradeInputStepProps {
@@ -53,7 +53,22 @@ export const GradeInputStep = ({
     }
   };
 
-  const canCalculate = completedCount === subjects.length;
+  // Flexible validation: Calculate if all *groups* are satisfied
+  const canCalculate = useMemo(() => {
+    // 1. All subjects without a group must be complete
+    const independentSubjectsComplete = subjects
+      .filter(s => !s.optionalGroup)
+      .every(isSubjectComplete);
+
+    // 2. All groups must have at least one complete subject
+    const groups = new Set(subjects.map(s => s.optionalGroup).filter(Boolean));
+    const groupsComplete = Array.from(groups).every(group => {
+      const groupSubjects = subjects.filter(s => s.optionalGroup === group);
+      return groupSubjects.some(isSubjectComplete);
+    });
+
+    return independentSubjectsComplete && groupsComplete;
+  }, [subjects]);
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-6">
@@ -77,25 +92,45 @@ export const GradeInputStep = ({
 
 
       {/* Subject navigation pills */}
-      <div className="flex gap-1 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="flex gap-1 overflow-x-auto pb-2 pt-6 scrollbar-hide items-end px-1 justify-center">
         {subjects.map((subject, index) => {
           const complete = isSubjectComplete(subject);
+          const nextSubject = subjects[index + 1];
+          const isConnected = nextSubject && subject.optionalGroup && nextSubject.optionalGroup === subject.optionalGroup;
+
           return (
-            <button
-              key={index}
-              onClick={() => setCurrentSubjectIndex(index)}
-              className={cn(
-                'flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all',
-                index === currentSubjectIndex
-                  ? 'bg-primary text-primary-foreground'
-                  : complete
-                  ? 'bg-success/20 text-success border border-success/30'
-                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
+            <div key={index} className="flex items-center relative">
+              <button
+                onClick={() => setCurrentSubjectIndex(index)}
+                className={cn(
+                  'flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all relative z-10',
+                  index === currentSubjectIndex
+                    ? 'bg-primary text-primary-foreground'
+                    : complete
+                      ? 'bg-success/20 text-success border border-success/30'
+                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                )}
+              >
+                {complete && <Check className="w-3 h-3 inline mr-1" />}
+                {index + 1}
+              </button>
+              {isConnected && (
+                <div className="absolute left-[90%] bottom-[80%] w-6 h-6 flex items-center justify-center pointer-events-none z-0">
+                  {/* Link Icon centered */}
+                  <div className="bg-background relative z-10 px-0.5 rounded-full">
+                    <Link2 className="w-2.5 h-2.5 text-muted-foreground/70 -rotate-45" />
+                  </div>
+
+                  {/* Connecting Arcs */}
+                  <svg className="absolute w-10 h-5 text-muted-foreground/40 top-1/2 left-1/2 -translate-x-1/2 -translate-y-[40%] overflow-visible" viewBox="0 0 40 20">
+                    {/* Left Arc */}
+                    <path d="M 0 20 C 5 5, 15 5, 20 10" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                    {/* Right Arc */}
+                    <path d="M 20 10 C 25 5, 35 5, 40 20" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                  </svg>
+                </div>
               )}
-            >
-              {complete && <Check className="w-3 h-3 inline mr-1" />}
-              {index + 1}
-            </button>
+            </div>
           );
         })}
       </div>
@@ -112,7 +147,7 @@ export const GradeInputStep = ({
         >
           {/* Subject header */}
           <div className="mb-6">
-            <div className="flex flex-col gap-4 mb-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex flex-row items-start justify-between gap-4 mb-4">
               <div className="flex-1 text-center sm:text-left">
                 <div className="text-xs text-muted-foreground mb-1">
                   Matière {currentSubjectIndex + 1} sur {subjects.length}
@@ -129,17 +164,17 @@ export const GradeInputStep = ({
                   </span>
                 </div>
               </div>
-              
+
               {/* Global average preview card */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.2 }}
                 className={cn(
-                  'glass rounded-lg p-3 flex-shrink-0 w-full sm:w-auto text-right',
+                  'bg-card/80 rounded-lg p-3 flex-shrink-0 border text-right',
                   previewResult.generalAverage >= 10
-                    ? 'bg-success/5 border border-success/20'
-                    : 'bg-destructive/5 border border-destructive/20'
+                    ? 'bg-success/5 border-success/20'
+                    : 'bg-destructive/5 border-destructive/20'
                 )}
               >
                 <div className="flex items-center justify-end gap-1.5 mb-1">
@@ -152,27 +187,53 @@ export const GradeInputStep = ({
                   </span>
                 </div>
                 <div className={cn(
-                  'text-2xl font-extrabold tracking-tight',
+                  'text-2xl font-extrabold tracking-tight text-right',
                   previewResult.generalAverage >= 10 ? 'text-success' : 'text-destructive'
                 )}>
                   {previewResult.generalAverage.toFixed(2)}
                 </div>
-                <div className="text-xs text-muted-foreground">/20</div>
+                <div className="text-xs text-muted-foreground text-right">/20</div>
               </motion.div>
             </div>
           </div>
 
           {/* Grade inputs */}
-          <div className="grid gap-4 sm:grid-cols-2">
-            {requiredInputs.map((input) => (
-              <GradeInput
-                key={input}
-                label={getInputLabel(input)}
-                value={currentSubject.inputs[input]}
-                onChange={(value) => onUpdateGrade(currentSubjectIndex, input, value)}
-              />
-            ))}
-          </div>
+          {(() => {
+            const isLocked = (() => {
+              if (!currentSubject.optionalGroup) return false;
+              // Check if any peer in the same group has inputs
+              return subjects.some(s =>
+                s.name !== currentSubject.name &&
+                s.optionalGroup === currentSubject.optionalGroup &&
+                getRequiredInputs(s.formula).some(k => s.inputs[k] !== undefined && s.inputs[k] !== null && s.inputs[k] !== 0) // Treat 0 as active input? Usually yes.
+              );
+            })();
+
+            return (
+              <div className="relative">
+                {isLocked && (
+                  <div className="absolute inset-0 z-10 bg-background/50 backdrop-blur-[1px] flex flex-col items-center justify-center rounded-xl border border-muted">
+                    <span className="bg-muted text-muted-foreground px-3 py-1 rounded-full text-sm font-medium">
+                      Option Locked
+                    </span>
+                    <span className="text-xs text-muted-foreground mt-2 text-center max-w-[200px]">
+                      Clear the other optional subject to enable this one.
+                    </span>
+                  </div>
+                )}
+                <div className={cn("grid gap-4 sm:grid-cols-2", isLocked && "opacity-40 pointer-events-none")}>
+                  {requiredInputs.map((input) => (
+                    <GradeInput
+                      key={input}
+                      label={getInputLabel(input)}
+                      value={currentSubject.inputs[input]}
+                      onChange={(value) => onUpdateGrade(currentSubjectIndex, input, value)}
+                    />
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Live average display */}
           {isCurrentComplete && currentAverage !== null && (
@@ -210,26 +271,27 @@ export const GradeInputStep = ({
               Précédent
             </Button>
 
-            {currentSubjectIndex < subjects.length - 1 ? (
-              <Button onClick={goToNext} className="bg-primary hover:bg-primary/90">
-                Suivant
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
-            ) : (
-              <Button
-                onClick={onCalculate}
-                disabled={!canCalculate}
-                className={cn(
-                  'transition-all',
-                  canCalculate
-                    ? 'bg-gradient-to-r from-primary to-secondary hover:opacity-90 glow-primary'
-                    : 'bg-muted text-muted-foreground'
-                )}
-              >
-                <Calculator className="w-4 h-4 mr-2" />
-                Calculer
-              </Button>
-            )}
+            <div className="flex gap-2">
+              {canCalculate && (
+                <Button
+                  onClick={onCalculate}
+                  className={cn(
+                    'transition-all',
+                    'bg-gradient-to-r from-primary to-secondary hover:opacity-90 glow-primary'
+                  )}
+                >
+                  <Calculator className="w-4 h-4 mr-2" />
+                  Calculer
+                </Button>
+              )}
+
+              {currentSubjectIndex < subjects.length - 1 && (
+                <Button onClick={goToNext} className={cn("bg-primary hover:bg-primary/90", canCalculate && "bg-muted text-muted-foreground hover:bg-muted/80 backdrop-blur-sm")}>
+                  Suivant
+                  <ChevronRight className="w-4 h-4 ml-2" />
+                </Button>
+              )}
+            </div>
           </div>
         </motion.div>
       </AnimatePresence>
