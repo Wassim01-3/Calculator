@@ -22,6 +22,7 @@ export type Subject = {
   inputs: GradeInput;
   formula: FormulaType;
   coefficient: number;
+  optionalGroup?: string;
 };
 
 export type SemesterConfig = {
