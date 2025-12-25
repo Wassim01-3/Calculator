@@ -9,6 +9,8 @@ import { useWizard } from '@/hooks/useWizard';
 import { Copyright } from 'lucide-react';
 import { FaAndroid } from 'react-icons/fa';
 
+import { trackEvent } from '@/lib/analytics';
+
 const GradeCalculator = () => {
   const {
     state,
@@ -47,6 +49,7 @@ const GradeCalculator = () => {
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-2 rounded-full bg-green-500 text-white px-5 py-2.5 shadow-lg shadow-green-500/30 hover:bg-green-600 hover:shadow-green-500/50 transition"
+            onClick={() => trackEvent('download_apk', { platform: 'android' })}
           >
             <FaAndroid className="w-4 h-4" />
             <span className="font-semibold">Download APK</span>
@@ -105,8 +108,8 @@ const GradeCalculator = () => {
 
           {currentStep === 'results' && state.results && (
             <motion.div key="results">
-              <ResultsDisplay 
-                results={state.results} 
+              <ResultsDisplay
+                results={state.results}
                 onReset={reset}
                 onEditGrades={() => goToStep('grades')}
               />
