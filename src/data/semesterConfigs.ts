@@ -30,16 +30,17 @@ export const semesterConfigs: Record<string, SemesterConfig> = {
   // Première année LSE - Semestre 2
   '1lse2': {
     subjects: [
-      createSubject("Principes d'économie", 'td_exam', 2.5),
-      createSubject('Principes de gestion', 'td_exam', 2.5),
-      createSubject('Comptabilité financière 1', 'td_exam', 2.5),
-      createSubject('Analyse', 'td_exam', 2.5),
-      createSubject('Statistique descriptive et calculs des probabilités', 'td_exam', 2.5),
-      createSubject('Français', 'td_exam', 0.75),
-      createSubject('Anglais', 'td_exam', 0.75),
-      createSubject('Produits Microsoft', 'td_exam', 1),
+      createSubject('Microéconomie 1', 'td_exam', 3),
+      createSubject('Macroéconomie 1', 'td_exam', 2.5),
+      createSubject('Comptabilité Financière 2', 'td_exam', 2.5),
+      createSubject('Algèbre', 'td_exam', 2.5),
+      createSubject('Principes de Droit', 'td_exam', 2),
+      createSubject('Français 2', 'td_exam', 0.75),
+      createSubject('Anglais 2', 'td_exam', 0.75),
+      createSubject('Internet et Web', 'td_exam', 1),
     ],
   },
+
 
   // Première année LBC - Semestre 1
   '1lbc1': {
@@ -228,37 +229,6 @@ export const semesterConfigs: Record<string, SemesterConfig> = {
     ],
   },
 
-  // Terminal LSE - Semestre 1
-  '3lse1': {
-    subjects: [
-      createSubject("Les métiers de l'économiste", 'ds1_ds2', 1),
-      createSubject('Conférences carrières', 'td_ds1_ds2', 1.5),
-      createSubject('Microéconomie 2', 'td_exam', 2.5),
-      createSubject('Macroeconomie 2', 'td_exam', 2),
-      createSubject("Histoire des faits et de la pensée économique", 'td_exam', 2),
-      createSubject('Français 3', 'td_exam', 0.75),
-      createSubject('Anglais 3', 'td_exam', 0.75),
-      createSubject('Culture entrepreneuriale', 'ds1_exam', 1),
-      createSubject('Commerce et marchés extérieurs', 'ds1_exam', 2),
-      createSubject('Statistique appliquée', 'td_exam', 1.5),
-    ],
-  },
-
-  // Terminal LSE - Semestre 2
-  '3lse2': {
-    subjects: [
-      createSubject("Les métiers de l'économiste", 'ds1_ds2', 1),
-      createSubject('Conférences carrières', 'td_ds1_ds2', 1.5),
-      createSubject('Microéconomie 2', 'td_exam', 2.5),
-      createSubject('Macroeconomie 2', 'td_exam', 2),
-      createSubject("Histoire des faits et de la pensée économique", 'td_exam', 2),
-      createSubject('Français 3', 'td_exam', 0.75),
-      createSubject('Anglais 3', 'td_exam', 0.75),
-      createSubject('Culture entrepreneuriale', 'ds1_exam', 1),
-      createSubject('Commerce et marchés extérieurs', 'ds1_exam', 2),
-      createSubject('Statistique appliquée', 'td_exam', 1.5),
-    ],
-  },
 
   // Terminal LBI (Business Intelligence) - Semestre 1
   '3lbi1': {
