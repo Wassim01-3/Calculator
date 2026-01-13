@@ -18,10 +18,7 @@ export const GradeInput = ({ label, value, onChange, className }: GradeInputProp
   }, [value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let val = e.target.value;
-
-    // Normalize comma to dot
-    val = val.replace(',', '.');
+    const val = e.target.value;
 
     // Allow empty string for clearing
     if (val === '') {
@@ -29,14 +26,16 @@ export const GradeInput = ({ label, value, onChange, className }: GradeInputProp
       return;
     }
 
-    // Validate: only allow numbers and one decimal point
-    if (!/^\d*\.?\d*$/.test(val)) return;
+    // Validate: allow numbers and either one dot OR one comma
+    if (!/^\d*[.,]?\d*$/.test(val)) return;
 
     setInputValue(val);
   };
 
   const handleBlur = () => {
-    let parsed = parseFloat(inputValue);
+    // Normalize both dot and comma to dot for parsing
+    const normalized = inputValue.replace(',', '.');
+    let parsed = parseFloat(normalized);
     if (isNaN(parsed) || inputValue === '') {
       parsed = 0;
     }
@@ -55,7 +54,7 @@ export const GradeInput = ({ label, value, onChange, className }: GradeInputProp
     }
   };
 
-  const numericValue = parseFloat(inputValue) || 0;
+  const numericValue = parseFloat(inputValue.replace(',', '.')) || 0;
 
   const getGradeColor = (grade: number) => {
     if (grade >= 16) return 'border-success text-success';
