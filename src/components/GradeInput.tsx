@@ -18,8 +18,11 @@ export const GradeInput = ({ label, value, onChange, className }: GradeInputProp
   }, [value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value;
-    
+    let val = e.target.value;
+
+    // Normalize comma to dot
+    val = val.replace(',', '.');
+
     // Allow empty string for clearing
     if (val === '') {
       setInputValue('');
@@ -28,7 +31,7 @@ export const GradeInput = ({ label, value, onChange, className }: GradeInputProp
 
     // Validate: only allow numbers and one decimal point
     if (!/^\d*\.?\d*$/.test(val)) return;
-    
+
     setInputValue(val);
   };
 
